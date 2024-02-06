@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  nginx:
+  #the nginx should be build from docker image
+    build:
+    #from where to share service (current directory) and find it's dependancies (.env)
+      context: .
+      dockerfile: requirements/nginx/Dockerfile
+    container_name: nginx
+    #dependancies run first (so wordpress -> nginx)
+    # depends_on:
+    #   - wordpress
+    ports:
+      - "443:443"
+    # volumes basically enable us to save files from container to host
+    # coz when container is finished, data is gone
+    # host folder : container folder
+    volumes:
+      - ./requirements/nginx/conf/:/etc/nginx/http.d/
+      - ./requirements/nginx/tools:/etc/nginx/ssl/
+      - /home/${USER}/simple_docker_nginx_html/public/html:/var/www/
+    restart: always
+  mariadb:
+    build:
+      context: .
+      dockerfile: requirements/mariadb/Dockerfile
+      args:
+        DB_NAME: ${DB_NAME}
+        DB_USER: ${DB_USER}
+        DB_PASS: ${DB_PASS}
+        DB_ROOT: ${DB_ROOT}
+    container_name: mariadb
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-volume:/var/lib/mysql
+    restart: always
+
+volumes:
+  db-volume:
+
+        
