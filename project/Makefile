@@ -1,28 +1,27 @@
 name = inception
 
-all:
-	@printf "Launch configuration ${name}...\n"
-	# '-f' use compose file at the address
-	@docker-compose -f srcs/docker-compose.yml up -d
-
-build:
+all: make_dirs
 	@printf "Building configuration ${name}...\n"
-	@docker-compose -f srcs/docker-compose.yml up -d --build
+	# '-f' use compose file at the address
+	@docker-compose -f srcs/docker-compose.yml --env-file srcs/.env up -d
+
+make_dirs:
+	@sh srcs/requirements/wordpress/tools/make_dir.sh
 
 mariadb: 
 	@printf "Building Mariadb only ${name}...\n"
-	@docker-compose -f srcs/docker-compose.yml up -d --no-deps mariadb
+	@docker-compose -f srcs/docker-compose.yml up --env-file srcs/.env -d --no-deps mariadb
 
 mariadb_check:
 	@docker exec -it mariadb mysql -u root
 
 down:
 	@printf "Stopping configuration ${name}...\n"
-	@docker-compose -f srcs/docker-compose.yml down
+	@docker-compose -f srcs/docker-compose.yml --env-file srcs/.env down
 
 re:	down
 	@printf "Rebuild configuration ${name}...\n"
-	@docker-compose -f srcs/docker-compose.yml up -d --build
+	@docker-compose -f srcs/docker-compose.yml --env-file srcs/.env up -d --build
 
 clean: down
 	@printf "Cleaning configuration ${name}...\n"
