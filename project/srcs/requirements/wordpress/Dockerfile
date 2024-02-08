@@ -24,7 +24,7 @@ RUN apk update && apk upgrade && apk add --no-cache \
     wget \
     unzip && \
     #change so wordpress listen to all connections on 9000 port
-    sed -i "s|listen = 127.0.0.1:9000|listen = 9000|g" \
+    sed -i "s|listen = 127.0.0.1:9000|listen = 0.0.0.0:9000|g" \
     /etc/php82/php-fpm.d/www.conf && \
     #uncomment the line so the owner is non-privileged  
     sed -i "s|;listen.owner = nobody|listen.owner = nobody|g" \
