@@ -99,7 +99,23 @@ services:
       - inception
     restart: always
 
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    ports:
+      - "8000:8000"
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer-volume:/data
+    restart: always
+
 volumes:
+  portainer-volume:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/${USER}/data/portainer
   wp-volume:
     driver_opts:
       o: bind

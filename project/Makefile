@@ -4,12 +4,12 @@ all: make_dirs
 	@printf "Building configuration ${name}...\n"
 	# '-f' use compose file at the address
 	@docker-compose -f srcs/docker-compose.yml --env-file srcs/.env up -d
-	# to install portainer
-	@docker volume create portainer_data
-	@docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest
+
 
 make_dirs:
-	@sh srcs/requirements/wordpress/tools/make_dir.sh
+	@sh srcs/requirements/tools/make_dir.sh
+	@sh srcs/requirements/nginx/tools/key_gen.sh
+	# @sleep 1
 
 mariadb: 
 	@printf "Building Mariadb only ${name}...\n"
@@ -37,3 +37,5 @@ fclean:
 	@docker system prune --all --force --volumes
 	@docker network prune --force
 	@docker volume prune --force
+	@rm -rf srcs/requirements/nginx/tools/*.key
+	@rm -rf srcs/requirements/nginx/tools/*.crt
